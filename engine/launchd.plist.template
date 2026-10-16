@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.gsb-radar.export</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/bin/bash</string>
+		<string>__KIT__/engine/export.sh</string>
+	</array>
+	<!-- Event-driven: fire whenever WhatsApp's local database changes (new messages synced, which always
+	     happens shortly after the Mac wakes). export.sh throttles itself to once per 30 min. -->
+	<key>WatchPaths</key>
+	<array>
+		<string>__HOME__/Library/Group Containers/group.net.whatsapp.WhatsApp.shared/ChatStorage.sqlite</string>
+		<string>__HOME__/Library/Group Containers/group.net.whatsapp.WhatsApp.shared/ChatStorage.sqlite-wal</string>
+	</array>
+	<!-- Safety net: every hour while the Mac is awake. -->
+	<key>StartInterval</key>
+	<integer>3600</integer>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>ThrottleInterval</key>
+	<integer>300</integer>
+	<key>StandardOutPath</key>
+	<string>/tmp/gsb-radar-export.log</string>
+	<key>StandardErrorPath</key>
+	<string>/tmp/gsb-radar-export.log</string>
+	<key>ProcessType</key>
+	<string>Background</string>
+</dict>
+</plist>

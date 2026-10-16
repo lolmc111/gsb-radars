@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GSB Radar setup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Source+Sans+3:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{--ground:#F2F3F1;--surface:#FFF;--raised:#FAFBFA;--ink:#1B2220;--muted:#5B6863;--faint:#8C9893;--line:#DEE3E0;--accent:#8C1515;--accent-deep:#5E0E0E;--accent-soft:#F7E8E8;--accent-ink:#8C1515;--ok:#2E6A49;--ok-soft:#E0EFE6;--warn:#94480A;--warn-soft:#FCEBD8;--danger:#A3161B;--danger-soft:#FBE2E2;--focus:#1F5FBF;--display:"Archivo","Helvetica Neue",Arial,sans-serif;--body:"Source Sans 3","Segoe UI",system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,Menlo,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ground:#101412;--surface:#181D1B;--raised:#1D2320;--ink:#E4EAE7;--muted:#9CA9A3;--faint:#74817B;--line:#2A3230;--accent-soft:#2F1C1D;--accent-ink:#E7777A;--ok:#7CC89B;--ok-soft:#16281E;--warn:#F1AA5E;--warn-soft:#33250F;--danger:#FF8C8F;--danger-soft:#3A1A1B;--focus:#7FB0FF;color-scheme:dark}}
+:root[data-theme="dark"]{--ground:#101412;--surface:#181D1B;--raised:#1D2320;--ink:#E4EAE7;--muted:#9CA9A3;--faint:#74817B;--line:#2A3230;--accent-soft:#2F1C1D;--accent-ink:#E7777A;--ok:#7CC89B;--ok-soft:#16281E;--warn:#F1AA5E;--warn-soft:#33250F;--danger:#FF8C8F;--danger-soft:#3A1A1B;--focus:#7FB0FF;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:var(--ground);color:var(--ink);font:16px/1.5 var(--body);padding:24px 16px 56px}
+.wrap{max-width:980px;margin:0 auto;display:grid;grid-template-columns:300px minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:760px){.wrap{grid-template-columns:minmax(0,1fr)}}
+.mast{grid-column:1/-1;background:linear-gradient(105deg,var(--accent),var(--accent-deep));color:#FFF;border-radius:16px;padding:20px 24px;display:flex;flex-direction:column;gap:6px}
+.mast .k{font:500 12px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;opacity:.85}
+.mast h1{margin:0;font:800 clamp(26px,4.5vw,36px)/1.05 var(--display);letter-spacing:-.015em}
+.mast p{margin:0;opacity:.9;max-width:60ch}
+.steps{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:8px;display:flex;flex-direction:column;position:sticky;top:16px}
+.step{display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;padding:10px 10px;border-radius:10px;align-items:start}
+.step.cur{background:var(--raised)}
+.step .i{width:26px;height:26px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font:600 12px/1 var(--mono);color:var(--faint);position:relative}
+.step.done .i{background:var(--ok);border-color:var(--ok);color:#FFF}
+.step.running .i{border-color:var(--accent-ink);color:var(--accent-ink)}
+.step.running .i::after{content:"";position:absolute;inset:-2px;border-radius:50%;border:2px solid var(--accent-ink);border-top-color:transparent;animation:spin 1s linear infinite}
+.step.wait .i{background:var(--warn-soft);border-color:var(--warn);color:var(--warn)}
+.step.fail .i{background:var(--danger-soft);border-color:var(--danger);color:var(--danger)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.step .t{font:600 15px/1.3 var(--display)}
+.step .m{font:400 13px/1.4 var(--body);color:var(--muted);margin-top:2px;overflow-wrap:anywhere}
+.step.wait .m{color:var(--warn)}.step.fail .m{color:var(--danger)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px 24px;display:flex;flex-direction:column;gap:14px;min-height:360px}
+.panel .k{font:500 12px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.panel h2{margin:0;font:700 22px/1.2 var(--display);letter-spacing:-.01em}
+.panel p{margin:0;color:var(--ink)}.panel p.m{color:var(--muted)}
+.panel ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.banner{border-radius:10px;padding:10px 14px;font-size:14.5px}
+.banner.wait{background:var(--warn-soft);color:var(--warn)}.banner.fail{background:var(--danger-soft);color:var(--danger)}.banner.done{background:var(--ok-soft);color:var(--ok)}
+.pathbox{display:flex;gap:8px;align-items:center;background:var(--raised);border:1px dashed var(--line);border-radius:10px;padding:10px 12px}
+.pathbox code{font:500 13.5px/1.4 var(--mono);color:var(--ink);overflow-wrap:anywhere}
+.cp{all:unset;cursor:pointer;font:500 12.5px/1 var(--mono);color:var(--accent-ink);border:1px solid var(--line);border-radius:6px;padding:7px 10px;background:var(--surface);white-space:nowrap;margin-left:auto}
+.cp:hover{border-color:var(--accent-ink)}
+.fig{width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:12px;background:var(--raised)}
+.fig .win{fill:var(--surface);stroke:var(--line)}.fig .bar{fill:var(--raised)}.fig text{font:500 11px var(--body);fill:var(--ink)}.fig .mu{fill:var(--muted)}.fig .mono{font:500 10px var(--mono)}
+.fig .tg{fill:var(--line)}.fig .tg.on{fill:var(--ok)}.fig .knob{fill:#FFF}.fig .hi{stroke:var(--focus);stroke-width:2;fill:none;rx:6}
+.fig .pulse{animation:pulse 1.6s ease-in-out infinite;transform-origin:center}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.fig .dot{fill:var(--accent-ink)}
+.foot{grid-column:1/-1;font:400 12.5px/1.5 var(--mono);color:var(--faint)}
+.offline{display:none;background:var(--raised);border:1px solid var(--line);border-radius:10px;padding:10px 14px;color:var(--muted);font-size:14px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+<body>
+<div class="wrap">
+  <header class="mast"><span class="k">GSB Radar · setup</span><h1 id="h1">Setting up your Radar</h1><p>The Terminal window does the work and asks the questions. This page shows where you are and what each step looks like.</p></header>
+  <nav class="steps" id="steps" aria-label="Setup steps"></nav>
+  <main class="panel" id="panel"></main>
+  <div class="offline" id="offline">The setup window has closed. If it ended with "Setup finished", you're done here — go to Claude. If it stopped with an error, run <code>setup.command</code> again; it repairs what's missing.</div>
+  <p class="foot">Served from this Mac only (127.0.0.1). Nothing on this page leaves your computer.</p>
+</div>
+<script>
+const STEPS=[
+ {id:'mac',t:'Checking this Mac',d:'macOS 13+, WhatsApp Desktop with a local message database, Apple command line tools.'},
+ {id:'wacrawl',t:'Installing wacrawl',d:'The open-source WhatsApp → SQLite exporter, via Homebrew. A copy goes to ~/wacrawl-scheduled/ so macOS can remember its permission.'},
+ {id:'fda',t:'Full Disk Access',d:'One switch in System Settings so the background job can read WhatsApp\'s database.'},
+ {id:'drive',t:'Google Drive for desktop',d:'Finds the Google account signed in to Drive. The export file travels through your own Drive.'},
+ {id:'settings',t:'Your settings folder',d:'Creates me/ — me.yaml, groups.md, prefs.md. Yours; updates never touch it.'},
+ {id:'launchd',t:'Background job',d:'Runs the export when WhatsApp gets new messages, and hourly.'},
+ {id:'export',t:'First export',d:'Runs through the background job, which also proves the Full Disk Access switch works.'},
+ {id:'groups',t:'Your groups',d:'Every group found is listed under "U — Untiered" in me/groups.md, ready for the onboarding chat.'},
+ {id:'next',t:'Next: Claude',d:'Open the Claude desktop app, connect ~/gsb-radar, say "set me up".'}
+];
+const $=id=>document.getElementById(id);
+const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e;};
+let status={steps:{}},lastOk=0;
+function stateOf(id){return (status.steps[id]||{}).state||'pending';}
+function current(){const run=STEPS.find(s=>['running','wait','fail'].includes(stateOf(s.id)));if(run)return run.id;const done=STEPS.filter(s=>stateOf(s.id)==='done');return done.length?(STEPS[Math.min(STEPS.indexOf(done[done.length-1])+1,STEPS.length-1)].id):'mac';}
+function renderSteps(){const N=$('steps');N.replaceChildren();const cur=current();STEPS.forEach((s,i)=>{const st=stateOf(s.id);const r=el('div','step '+st+(s.id===cur?' cur':''));const ic=el('span','i',st==='done'?'✓':st==='fail'?'!':st==='wait'?'…':String(i+1));const b=el('div');b.append(el('div','t',s.t));const m=(status.steps[s.id]||{}).msg;if(m)b.append(el('div','m',m));r.append(ic,b);N.append(r);});}
+const FIG={
+ fda:`<svg class="fig" viewBox="0 0 560 250" role="img" aria-label="System Settings, Full Disk Access list with wacrawl switched on"><rect class="win" x="8" y="8" width="544" height="234" rx="12"/><rect class="bar" x="8" y="8" width="150" height="234" rx="12"/><rect class="bar" x="130" y="8" width="28" height="234"/><text x="22" y="40" class="mu">Search</text><text x="22" y="78">General</text><text x="22" y="104">Appearance</text><text x="22" y="130" style="font-weight:700">Privacy &amp; Security</text><text x="22" y="156">Desktop &amp; Dock</text><text x="178" y="40" style="font-weight:700;font-size:13px">Full Disk Access</text><text x="178" y="60" class="mu">Allow the apps below to access data like Mail, Messages and WhatsApp.</text><g><text x="190" y="100">Terminal</text><rect class="tg" x="470" y="88" width="40" height="22" rx="11"/><circle class="knob" cx="481" cy="99" r="9"/></g><g><rect class="hi" x="176" y="118" width="360" height="34"/><text x="190" y="140" style="font-weight:700">wacrawl</text><text x="250" y="140" class="mono mu">~/wacrawl-scheduled/wacrawl</text><rect class="tg on pulse" x="470" y="124" width="40" height="22" rx="11"/><circle class="knob" cx="499" cy="135" r="9"/></g><g><text x="190" y="180">Google Drive</text><rect class="tg" x="470" y="168" width="40" height="22" rx="11"/><circle class="knob" cx="481" cy="179" r="9"/></g><rect class="win" x="176" y="200" width="28" height="22" rx="6"/><text x="186" y="216" style="font-weight:700">+</text><text x="214" y="216" class="mu">← click +, press ⌘⇧G, paste the path, Open, then switch it ON</text></svg>`,
+ drive:`<svg class="fig" viewBox="0 0 560 180" role="img" aria-label="Google Drive for desktop menu showing a signed-in account"><rect class="win" x="8" y="8" width="544" height="164" rx="12"/><rect class="bar" x="8" y="8" width="544" height="36" rx="12"/><text x="24" y="31" style="font-weight:700">Google Drive</text><text x="24" y="76">Signed in as</text><text x="24" y="98" class="mono" style="font-weight:700">you@gmail.com</text><text x="24" y="130" class="mu">Must be the same account you authorize for the Google Drive connector in Claude.</text><circle class="dot pulse" cx="520" cy="90" r="6"/></svg>`,
+ export:`<svg class="fig" viewBox="0 0 560 130" role="img" aria-label="Pipeline: WhatsApp to export to Google Drive"><rect class="win" x="8" y="8" width="544" height="114" rx="12"/><path d="M110 64 H200 M300 64 H390" stroke="var(--line)" stroke-width="2"/><path id="pm" d="M110 64 H390" fill="none"/><rect class="win" x="24" y="40" width="86" height="48" rx="8"/><text x="67" y="68" text-anchor="middle">WhatsApp</text><rect class="win" x="200" y="40" width="100" height="48" rx="8"/><text x="250" y="68" text-anchor="middle">export job</text><rect class="win" x="390" y="40" width="120" height="48" rx="8"/><text x="450" y="68" text-anchor="middle">Google Drive</text><circle class="dot" r="5"><animateMotion dur="3s" repeatCount="indefinite"><mpath href="#pm"/></animateMotion></circle><text x="280" y="112" text-anchor="middle" class="mu">groups only · text and links · no DMs, no media</text></svg>`,
+ next:`<svg class="fig" viewBox="0 0 560 190" role="img" aria-label="Claude desktop app with the gsb-radar folder connected"><rect class="win" x="8" y="8" width="544" height="174" rx="12"/><rect class="bar" x="8" y="8" width="160" height="174" rx="12"/><rect class="bar" x="140" y="8" width="28" height="174"/><text x="24" y="40" style="font-weight:700">Claude</text><text x="24" y="70" class="mu">New chat</text><rect class="hi" x="18" y="86" width="136" height="28"/><text x="28" y="105" class="mono">📁 gsb-radar</text><rect class="win" x="190" y="110" width="340" height="40" rx="10"/><text x="206" y="135" style="font-weight:700">set me up</text><text x="206" y="80" class="mu">Connect the folder ~/gsb-radar, then say:</text><circle class="dot pulse" cx="512" cy="130" r="5"/></svg>`
+};
+const WACRAWL=(status.wacrawlPath)||'~/wacrawl-scheduled/wacrawl';
+function renderPanel(){
+  const P=$('panel');P.replaceChildren();const id=current();const s=STEPS.find(x=>x.id===id);const st=stateOf(id);const m=(status.steps[id]||{}).msg||'';
+  P.append(el('span','k','Step '+(STEPS.indexOf(s)+1)+' of '+STEPS.length+' · '+(st==='pending'?'up next':st)));
+  P.append(el('h2',null,s.t));P.append(el('p','m',s.d));
+  if(st==='wait')P.append(Object.assign(el('div','banner wait'),{textContent:'Waiting for you — '+(m||'answer in the Terminal window.')}));
+  if(st==='fail')P.append(Object.assign(el('div','banner fail'),{textContent:'Stopped: '+m+' — fix that, then run setup.command again.'}));
+  if(st==='done'&&m)P.append(Object.assign(el('div','banner done'),{textContent:m}));
+  if(id==='fda'){const w=el('div');w.innerHTML=FIG.fda;P.append(w);const ol=el('ol');['System Settings → Privacy & Security → Full Disk Access (it opened for you).','Click the + button under the list.','Press ⌘⇧G, paste the path below (it is on your clipboard), click Open.','Make sure the switch next to wacrawl is ON. Then press Return in the Terminal.'].forEach(t=>ol.append(el('li',null,t)));P.append(ol);
+    const pb=el('div','pathbox');pb.append(el('code',null,'/Users/'+(status.user||'you')+'/wacrawl-scheduled/wacrawl'));const b=el('button','cp','Copy');b.onclick=async()=>{try{await navigator.clipboard.writeText('/Users/'+(status.user||'you')+'/wacrawl-scheduled/wacrawl');b.textContent='Copied';setTimeout(()=>b.textContent='Copy',1500);}catch(_){}};pb.append(b);P.append(pb);
+    P.append(el('p','m','Why: macOS protects WhatsApp\'s data. The permission is tied to this one copy of wacrawl, so nothing else on your Mac gains access.'));}
+  if(id==='drive'){const w=el('div');w.innerHTML=FIG.drive;P.append(w);P.append(el('p','m','No Drive for desktop? Install it from google.com/drive/download, sign in, then run setup again.'));}
+  if(id==='wacrawl'){P.append(el('p','m','First time on this Mac, Homebrew (the Mac package manager) is installed too; it asks for your Mac password in the Terminal. That is normal.'));}
+  if(id==='export'){const w=el('div');w.innerHTML=FIG.export;P.append(w);P.append(el('p','m','If this step reports "could NOT read WhatsApp", the Full Disk Access switch is off: go back one step.'));}
+  if(id==='next'){const w=el('div');w.innerHTML=FIG.next;P.append(w);const ol=el('ol');['Open the Claude desktop app and start a new chat.','Connect the folder ~/gsb-radar (Add folder).','Say: set me up — Claude interviews you for ~10 minutes and creates the cloud task.','Bookmark the page link from the first run. The page\'s ? button has a 1-minute tour.'].forEach(t=>ol.append(el('li',null,t)));P.append(ol);
+    const pb=el('div','pathbox');pb.append(el('code',null,'set me up'));const b=el('button','cp','Copy');b.onclick=async()=>{try{await navigator.clipboard.writeText('set me up');b.textContent='Copied';setTimeout(()=>b.textContent='Copy',1500);}catch(_){}};pb.append(b);P.append(pb);}
+  if(id==='groups'||id==='settings'||id==='launchd'||id==='mac'){P.append(el('p','m','Nothing to do here — this step runs by itself.'));}
+}
+async function poll(){try{const r=await fetch('status.json?t='+Date.now(),{cache:'no-store'});if(r.ok){const j=await r.json();if(j&&j.steps){status=j;lastOk=Date.now();}}}catch(_){}
+  $('offline').style.display=(Date.now()-lastOk>6000&&lastOk)?'block':'none';renderSteps();renderPanel();
+  $('h1').textContent=stateOf('next')==='wait'?'Mac side done — over to Claude':stateOf(current())==='fail'?'Setup stopped':'Setting up your Radar';}
+poll();setInterval(poll,1000);
+</script>
+</body>
+</html>

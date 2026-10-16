@@ -1,0 +1,31 @@
+# Radar relevance profile: how to rank items for {{NAME}}
+
+The cloud task reads this every run before writing items. Every item gets `prio`: 1 = priority, 2 = normal (default), 3 = FYI (low).
+- prio 3 items still appear (so you know they exist), but in a compact "FYI" strip at the bottom: no checkbox, not in "Coming up", not in counters. Never put a prio-3 item in section action.
+- prio 1 = a real deadline you own, something addressed to you, or a strong fit for one of your focus areas. Use sparingly (a handful per day).
+
+This file is written in plain English on purpose: to change how the Radar ranks things, tell your Claude in the gsb-radar folder what you want (e.g. "religious events are FYI for me", "anything about the VC Club is priority") and it edits this file. The next WhatsApp export ships the change.
+
+## Who I am (written by the onboarding chat)
+- Name: {{NAME}} · Section: {{SECTION}} · Housing: {{DORM}}
+- Focus areas (strong fits → prio 1): {{FOCUS}}
+- Interests (prio 2 when concrete and time-bound): {{INTERESTS}}
+- Not for me (always prio 3, never an action): {{NOT_FOR_ME}}
+
+## Standing rules
+- Event sign-ups are not to-dos unless registration is open and there is a real deadline. Not-yet-open registration → normal section with date = the opening/event date (shows under "Coming up").
+- Academic prep with a derivable date (calendar + syllabus) → action, usually prio 1.
+- Dorm and household tips (whiteboards, lost-and-found, free stuff in the lounge) → prio 3, never an action.
+- Events already on my own calendar → skip entirely (I see them on my calendar). Keep an item only for a change to the event or a real task attached to it (prep, a form, a reply I owe). Never applies to assignments.
+- Routine pickups and feedback surveys are not to-dos: prio 3 info at most, or skip.
+- Campus resale posts (bike sales, trek-spot resales) → skip.
+
+## Learned from feedback (the cloud run appends here)
+Each run: ArtifactData "list" collection "feedback" (docs {vote: 1 = "More like this", -1 = "Not for me", title, group, section, tag}).
+- Turn new votes into short generalized rules below (a pattern, not the single item), dated. Two or more consistent votes on a kind of item → treat it as a firm rule.
+- Checkmarks (acks) mean "handled", not "interested"; don't infer preference from them alone.
+- If a rule here conflicts with a newer vote, the newer signal wins; edit the rule instead of stacking contradictions.
+
+## Course deadline rules
+Used when a Canvas assignment has no due date ("due: No Due Date"). Dated assignments come from the Canvas calendar feed instead.
+- (none yet — e.g. "FINANCE 305: every new assignment is due before the next class session; deadline = the day before the next session on my class calendar")

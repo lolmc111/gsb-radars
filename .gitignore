@@ -1,0 +1,10 @@
+# personal files never go to the repo
+me/me.yaml
+me/groups.md
+me/prefs.md
+me/task-prompt.md
+raw/
+chats.txt
+.engine-backup-*
+__pycache__/
+.DS_Store

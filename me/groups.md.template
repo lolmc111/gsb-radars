@@ -1,0 +1,29 @@
+# WhatsApp group tiers — which groups the Radar reads and how closely
+
+Keyed by JID (the long number@g.us) because several groups share a name. Move a line between tiers any time; the next export ships the change.
+setup.command adds every group it finds under **U — Untiered**; the onboarding chat sorts them into A/B/C/D. New groups you join later land in U automatically (treated like B until you move them).
+
+## A — Core (summarize fully: deadlines, events, announcements, anything addressed to you)
+Class-wide, section, cohort, course and housing groups.
+
+## B — Workstream / career / close circle (extract people, opportunities, asks; don't miss anything substantive)
+Clubs you're active in, career groups, small dinner/trip groups, anything tied to what you're working on.
+
+## C — Interest / social (one line each: only events, sign-ups, deadlines)
+Sports, food, parties, travel, hobby groups.
+
+## D — Ignore
+Photo dumps, buy/sell, anything you never want to see here.
+
+## X — Not GSB (skip)
+Family, work, non-school groups. Never exported.
+
+## U — Untiered (new, not yet classified; read like B until you move them)
+
+## Classification rules (for the weekly scan and the onboarding chat)
+- A: class-wide / section / cohort-wide official or admin groups, course and squad groups, housing/residence groups.
+- B: clubs and workstream groups, career/job groups, close-circle groups (cabin, small group dinners, trip planning you organize).
+- C: interest and social groups (sports, food, parties, treks you're not organizing).
+- D: photo-only, buy/sell/trade, anything explicitly muted forever.
+- X: not GSB at all.
+- When unsure, pick the higher-coverage tier (A > B > C). Groups in D and X are never exported.

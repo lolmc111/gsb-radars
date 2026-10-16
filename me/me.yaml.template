@@ -1,0 +1,31 @@
+# me/me.yaml — your GSB Radar settings. Plain `key: value` lines.
+# setup.command fills the machine facts; the onboarding chat ("set me up") fills the rest. Edit by hand any time.
+# update.command never touches this folder. Nothing in here is a secret: no passwords, no tokens.
+
+# —— who you are ——
+name: ""                         # first name, how the page should address you
+wa_names: ""                     # how you appear in WhatsApp groups, comma-separated (e.g. "Alex, Alex Chen, A. Chen")
+section: ""                      # e.g. "Section 4"
+dorm: ""                         # e.g. "Jmac", "Schwab", "off-campus"
+timezone: "America/Los_Angeles"
+
+# —— machine facts (setup.command) ——
+drive_account: ""                # Google account signed in to Google Drive for desktop — and to Claude's Google Drive connector
+drive_folder: "GSB Radar (auto)" # folder in My Drive that receives the bundle
+bundle_name: "gsb-radar-bundle.tar"
+
+# —— cloud side (onboarding chat) ——
+page_title: "GSB Group Radar"    # the cloud task finds (or creates) the page by this exact title; make it unique to you, e.g. "GSB Group Radar · Alex"
+trigger_id: ""                   # scheduled task id (trig_…) once created — used by the poke module only
+run_times: "7:05, 13:05, 19:05"  # when the cloud task runs, in your timezone
+
+# —— modules (all optional; false = that source is simply absent) ——
+module_email: false              # forwarded school email → needs Gmail forwarding + a label (see README §Email)
+school_email: ""                 # e.g. you@stanford.edu
+gmail_label: "GSB"               # label your Gmail filter applies to forwarded school mail
+module_canvas: false             # Canvas due dates → needs your Canvas calendar feed subscribed in Google Calendar (see README §Canvas)
+canvas_calendar_id: ""           # the …@import.calendar.google.com id of that feed (the chat can look it up)
+class_calendar_id: ""            # Google calendar that has your class schedule (usually your school account's primary calendar)
+school_events_calendar_id: ""    # optional: a school events calendar you subscribe to (…@import.calendar.google.com)
+personal_calendar_ids: ""        # optional, comma-separated: other calendars with your meetings, so already-scheduled events are not repeated as items
+module_poke: false               # instant rebuild after each export → needs the Claude Code CLI installed and logged in
